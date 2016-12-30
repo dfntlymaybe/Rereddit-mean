@@ -1,0 +1,8 @@
+.comment-body, .post-title {
+  font-size:24px; 
+  margin-left:15px;
+}
+
+.glyphicon-thumbs-up {
+  cursor: pointer;
+}

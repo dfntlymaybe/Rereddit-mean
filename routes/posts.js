@@ -1,3 +1,4 @@
+
 /********************imports*******************/
 
 var Post = require('../models/posts');
@@ -25,7 +26,7 @@ router.param('post', function(req, res, next, id) {
 
 //Get specific post
 router.get('/:postID', function(req, res, next) {
-
+  console.log("get post: " + req.params.postID);//dev
   //Getting the post include all comments:
   Post.findById(req.params.postID).populate('comments').exec(function (err, post){
     if (err) { return next(err); }
@@ -38,6 +39,7 @@ router.get('/:postID', function(req, res, next) {
 
 //Increment upvotes for a specific post
 router.put('/:post', function(req, res, next) {
+  console.log('Increment upvotes for post: ' + req.post._id);//dev
 
   req.post.incrementUpvotes();
   req.post.save(function(err, post){
@@ -52,6 +54,7 @@ router.put('/:post', function(req, res, next) {
 //Increment upvotes by 1 to specific comment
 router.put('/:post/comments/:comment', function(req, res, next) {
 
+  console.log('Increment upvotes for comment: ' + req.params.comment);//dev
   Comment.findById(req.params.comment, function(err, comment){
     comment.incrementUpvotes();
     comment.save(function(err, com){
@@ -67,6 +70,7 @@ router.put('/:post/comments/:comment', function(req, res, next) {
 //Save new comment to a specific post
 router.post('/:post/comments', function(req, res, next) {
 
+  console.log('save new comment for post: ' + req.post._id);//dev
   var comment = new Comment(req.body);
   comment.post = req.post._id;
 
@@ -75,7 +79,7 @@ router.post('/:post/comments', function(req, res, next) {
     req.post.comments.push(com);
     req.post.save(function(err, post) {
       if(err){ return next(err); }
-      res.json(post);
+      res.json(com);
     });
   });
 });
@@ -83,6 +87,7 @@ router.post('/:post/comments', function(req, res, next) {
 //Save new post
 router.post('/', function(req, res, next) {
   var post = new Post(req.body);
+  console.log('save new post: ' + post._id);//dev
   post.save(function(err, post){
     if(err){
       console.log(err);
