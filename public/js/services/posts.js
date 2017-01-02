@@ -1,11 +1,13 @@
 
-app.factory('posts', ['$http', function($http) {
+app.factory('posts', ['$http', 'auth',  function($http, auth) {
   var postService = {
     posts: [],
 
     //for GETting all the posts list
     getAll: function() {
-      return $http.get('/posts').then(function(data){
+      return $http.get('/posts',{
+        headers:  {'Authorization': "Bearer " + auth.getToken()}
+      }).then(function(data){
         angular.copy(data.data, postService.posts);
         // return postService.posts;
       });
@@ -13,7 +15,9 @@ app.factory('posts', ['$http', function($http) {
 
     // for GETting one post and it's comments 
     get: function(id) {
-      return $http.get('/posts/' + id).then(function(data){
+      return $http.get('/posts/' + id,{
+        headers:  {'Authorization': "Bearer " + auth.getToken()}
+      }).then(function(data){
         var post = {};
         angular.copy(data.data, post);
         for(var i = 0; i < postService.posts.length; i++){
@@ -27,7 +31,9 @@ app.factory('posts', ['$http', function($http) {
 
     // for POSTing one new post
     create: function(post) {
-      $http.post('/posts', post).then(function(data){
+      $http.post('/posts', post, {
+        headers:  {'Authorization': "Bearer " + auth.getToken()}
+      }).then(function(data){
         var newPost = {};
         angular.copy(data.data, newPost);
         postService.posts.push(newPost);
@@ -47,7 +53,9 @@ app.factory('posts', ['$http', function($http) {
 
     // for adding a comment to one post
     addComment: function(id, comment) {
-      $http.post('/posts/' + id + '/comments', comment).then(function(data){
+      $http.post('/posts/' + id + '/comments', comment, {
+        headers:  {'Authorization': "Bearer " + auth.getToken()}
+      }).then(function(data){
         debugger;
         for(var i = 0; i < postService.posts.length; i++){
           if(postService.posts[i]._id == id){

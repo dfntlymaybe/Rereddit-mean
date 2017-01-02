@@ -1,4 +1,4 @@
-app.controller('PostsCtrl', ['$scope', '$stateParams', 'posts', 'singlePostPromise', function($scope, $stateParams, posts, singlePostPromise) {
+app.controller('PostsCtrl', ['$scope', '$stateParams', 'posts', 'singlePostPromise','auth' , function($scope, $stateParams, posts, singlePostPromise, auth) {
   
   // $scope.post = posts.posts[$stateParams.id];
   //console.log(posts.posts[$stateParams.id]);
@@ -7,7 +7,7 @@ app.controller('PostsCtrl', ['$scope', '$stateParams', 'posts', 'singlePostPromi
   $scope.addComment = function() {
     if ($scope.body === '') { return; }
     var comment = {
-      user: 'Vince',
+      user: auth.currentUser(),
       text: $scope.body
     }
     posts.addComment($scope.post._id, comment);

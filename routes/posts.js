@@ -1,10 +1,17 @@
 
 /********************imports*******************/
 
+var express = require('express');
+var passport = require('passport');
+var expressJWT = require('express-jwt');
+
+require('../config/passport');
+
 var Post = require('../models/posts');
 var Comment = require('../models/comments');
-var express = require('express');
+var User = require('../models/Users');
 var router = express.Router();
+var auth = expressJWT({secret: 'myLittleSecret'});
 
 
 /**************middleware***********************/
@@ -25,7 +32,7 @@ router.param('post', function(req, res, next, id) {
 /*******************Event handlers*********************/
 
 //Get specific post
-router.get('/:postID', function(req, res, next) {
+router.get('/:postID', auth, function(req, res, next) {
   console.log("get post: " + req.params.postID);//dev
   //Getting the post include all comments:
   Post.findById(req.params.postID).populate('comments').exec(function (err, post){
@@ -38,7 +45,7 @@ router.get('/:postID', function(req, res, next) {
 });
 
 //Increment upvotes for a specific post
-router.put('/:post', function(req, res, next) {
+router.put('/:post', auth, function(req, res, next) {
   console.log('Increment upvotes for post: ' + req.post._id);//dev
 
   req.post.incrementUpvotes();
@@ -52,7 +59,7 @@ router.put('/:post', function(req, res, next) {
 });
 
 //Increment upvotes by 1 to specific comment
-router.put('/:post/comments/:comment', function(req, res, next) {
+router.put('/:post/comments/:comment', auth, function(req, res, next) {
 
   console.log('Increment upvotes for comment: ' + req.params.comment);//dev
   Comment.findById(req.params.comment, function(err, comment){
@@ -68,7 +75,7 @@ router.put('/:post/comments/:comment', function(req, res, next) {
 });
 
 //Save new comment to a specific post
-router.post('/:post/comments', function(req, res, next) {
+router.post('/:post/comments',auth , function(req, res, next) {
 
   console.log('save new comment for post: ' + req.post._id);//dev
   var comment = new Comment(req.body);
@@ -85,7 +92,7 @@ router.post('/:post/comments', function(req, res, next) {
 });
 
 //Save new post
-router.post('/', function(req, res, next) {
+router.post('/', auth, function(req, res, next) {
   var post = new Post(req.body);
   console.log('save new post: ' + post._id);//dev
   post.save(function(err, post){
@@ -98,7 +105,7 @@ router.post('/', function(req, res, next) {
 });
 
 //Get all posts
-router.get('/', function (req, res, next) {
+router.get('/', auth, function (req, res, next) {
   console.log("Send All posts");//dev
   
   Post.find(function (error, posts){
