@@ -105,7 +105,7 @@ router.post('/', auth, function(req, res, next) {
 });
 
 //Get all posts
-router.get('/', auth, function (req, res, next) {
+router.get('/', function (req, res, next) {
   console.log("Send All posts");//dev
   
   Post.find(function (error, posts){
